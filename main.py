@@ -19,6 +19,14 @@ import traceback
 import getpass
 import sys
 
+
+def location_decision(my_places,weights):
+    # weights should sum to 1 for multinomial
+    weights /= np.sum(weights)
+    idx = np.where(np.random.multinomial(1, weights))[0]
+    return my_places[idx[0]]
+
+
 def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princeton.edu"):
     '''Sends email given username, password, recipient list, email subject and message
     body.
@@ -49,10 +57,11 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
 # get password from command line for now
 # TODO accept location of password file so this can be automated
 pwd = getpass.getpass()
-recipient = "mathewsyriac@gmail.com" # set to myself for testing
+recipient = ["mathewsyriac@gmail.com"] # set to myself for testing
 user = "mathewm"
-subject = "Happy Hour"
-emailFile = "email_first_reminder.txt" # this is the first reminder email
+subject = "Happy Hour: Tests"
+emailFile = "email_location.txt" # this is the first reminder email
+mserver = "mail.astro.princeton.edu"
 
 # read from the possible choice of places
 places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
@@ -60,14 +69,12 @@ places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
 my_places = places_weights['name']
 weights = places_weights['weight']
 
-# weights should sum to 1 for multinomial
-weights /= np.sum(weights)
-idx = np.where(np.random.multinomial(1, weights))[0]
+
 
 # decide on a location
 np.random.seed(int(time.time()))
 decisions = {}
-decisions['_location'] = my_places[my_places[idx[0]]]
+decisions['_location'] = location_decision(my_places,weights)
 
 # read the email template
 with open(emailFile) as f:

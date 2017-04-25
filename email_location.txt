@@ -4,7 +4,5 @@ After much deliberation, I believe I know where we should get drinks tonight. Ho
 
 Hope to see you all there!
 
-$afterthought_prelude $_afterthought
-
 $goodbye
 $short_name
