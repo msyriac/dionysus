@@ -60,10 +60,14 @@ places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
 my_places = places_weights['name']
 weights = places_weights['weight']
 
+# weights should sum to 1 for multinomial
+weights /= np.sum(weights)
+idx = np.where(np.random.multinomial(1, weights))[0]
+
 # decide on a location
 np.random.seed(int(time.time()))
 decisions = {}
-decisions['_location'] = my_places[np.random.randint(0,len(my_places))]
+decisions['_location'] = my_places[my_places[idx[0]]]
 
 # read the email template
 with open(emailFile) as f:
