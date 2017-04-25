@@ -10,6 +10,8 @@ This needs to be integrated with a daemon that sends email automatically at
 pre-defined times.
 '''
 
+from __future__ import print_function
+
 import numpy as np
 import time
 import yaml
@@ -22,7 +24,7 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
     body.
     '''
     import smtplib
-    
+
     FROM = "dio"
     TO = recipient if type(recipient) is list else [recipient]
     SUBJECT = subject
@@ -38,10 +40,10 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
         server.login(user, pwd)
         server.sendmail(FROM, TO, message)
         server.close()
-        print 'successfully sent the mail'
+        print('successfully sent the mail')
     except:
         traceback.print_exc()
-        print "failed to send mail"
+        print("failed to send mail")
 
 
 # get password from command line for now
@@ -53,15 +55,19 @@ subject = "Happy Hour"
 emailFile = "email_first_reminder.txt" # this is the first reminder email
 
 # read from the possible choice of places
-my_places = []
-with open("listOfPlaces.txt") as f:
-    for line in f:
-        my_places.append(line.strip())
+places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
+                               names=True, dtype=['U128', float])
+my_places = places_weights['name']
+weights = places_weights['weight']
+
+# weights should sum to 1 for multinomial
+weights /= np.sum(weights)
+idx = np.where(np.random.multinomial(1, weights))[0]
 
 # decide on a location
 np.random.seed(int(time.time()))
 decisions = {}
-decisions['_location'] = my_places[np.random.randint(0,len(my_places))]
+decisions['_location'] = my_places[my_places[idx[0]]]
 
 # read the email template
 with open(emailFile) as f:
@@ -69,8 +75,8 @@ with open(emailFile) as f:
 
 # find unknowns marked by $ in the template
 unknowns = [word[1:] for word in email.split() if word.startswith('$')]
-    
-# load settings               
+
+# load settings
 with open('settings.yaml') as f:
     dataMap = yaml.safe_load(f)
 
@@ -93,5 +99,5 @@ for unknown in unknowns:
 
     email = email.replace('$'+unknown,d)
 
-# send email    
+# send email
 send_email(user, pwd, recipient, subject, email,mail_server=mserver)
