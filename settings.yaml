@@ -1,0 +1,27 @@
+name: dionysus
+short_name: dio
+frequency: weekly
+trigger_day: Monday
+time_zone: EST
+trigger_time_reminder: 2pm
+trigger_time_location: 4pm
+happy_hour_time: 6pm
+personality:
+  greetings:
+    - Hi Peyton postdocs and grads!
+    - Hello everyone,
+    - Hi there,
+  afterthought_prelude:
+    - Oh and something that just crossed my mind,
+    - By the way,
+    - Also just fyi,
+  goodbye:
+    - Cheers,
+    - Bye,
+    - Thanks,
+    - Ciao,
+    - Peace,
+  mean_probability: 0.1
+  # kindness probability = 1-mean_probability
+  kind_bots:
+    - kokoropos_bot

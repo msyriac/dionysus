@@ -1,0 +1,11 @@
+$greetings
+
+I'm $name , your friendly neighbourhood Happy Hour bot... umm...  human. This is just a reminder that we plan on getting together for our $frequency drink at $happy_hour_time tonight.
+
+At around $trigger_time_location , I will let you know what location I decided on (definitely not randomly, because I'm totally not a robot). 
+
+$afterthought_prelude $_afterthought
+
+$goodbye
+$short_name
+
