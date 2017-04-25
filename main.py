@@ -2,6 +2,7 @@ import numpy as np
 import time
 import yaml
 import traceback
+import getpass
 
 def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princeton.edu"):
     import smtplib
@@ -27,12 +28,11 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
         print "failed to send mail"
 
 
-import getpass
+# get email info, password from command line for now
 pwd = getpass.getpass()
 recipient = "mathewsyriac@gmail.com"
 user = "mathewm"
 subject = "Happy Hour"
-        
 emailFile = "email.txt"
 
 # read from the possible choice of places
@@ -75,5 +75,6 @@ for unknown in unknowns:
         d = d[np.random.randint(0,len(d))]
 
     email = email.replace('$'+unknown,d)
-    
+
+# send email    
 send_email(user, pwd, recipient, subject, email,mail_server=mserver)
