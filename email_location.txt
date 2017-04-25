@@ -1,6 +1,6 @@
 $greetings
 
-I had a think about it, and I believe I know where we should get drinks tonight. How about we meet at $_location at $happy_hour_time ?
+After much deliberation, I believe I know where we should get drinks tonight. How about we meet at $_location at $happy_hour_time ?
 
 Hope to see you all there!
 
