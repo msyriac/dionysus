@@ -25,3 +25,16 @@ personality:
   # kindness probability = 1-mean_probability
   kind_bots:
     - kokoropos_bot
+
+
+email:
+  mail_server: mail.astro.princeton.edu  
+  server_port: 587
+  username: mathewm
+  recipient: mathewsyriac@gmail.com
+  subject:
+    - Happy Hour
+  first_reminder_email: email_first_reminder.txt
+  location_email: email_location.txt
+  
+    

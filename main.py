@@ -50,7 +50,7 @@ pwd = getpass.getpass()
 recipient = "mathewsyriac@gmail.com" # set to myself for testing
 user = "mathewm"
 subject = "Happy Hour"
-emailFile = "email.txt" # this is the first reminder email
+emailFile = "email_first_reminder.txt" # this is the first reminder email
 
 # read from the possible choice of places
 my_places = []
