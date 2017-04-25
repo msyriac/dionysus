@@ -54,57 +54,65 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
         print("failed to send mail")
 
 
-# get password from command line for now
-# TODO accept location of password file so this can be automated
-pwd = getpass.getpass()
-recipient = ["mathewsyriac@gmail.com"] # set to myself for testing
-user = "mathewm"
-subject = "Happy Hour: Tests"
-emailFile = "email_location.txt" # this is the first reminder email
-mserver = "mail.astro.princeton.edu"
 
-# read from the possible choice of places
-places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
-                               names=True, dtype=['U128', float])
-my_places = places_weights['name']
-weights = places_weights['weight']
+def main(argv):        
+
+    # get password from command line for now
+    # TODO accept location of password file so this can be automated
+    pwd = getpass.getpass()
+    recipient = ["mathewsyriac@gmail.com"] # set to myself for testing
+    user = "mathewm"
+    subject = "Happy Hour: Tests"
+    emailFile = "email_location.txt" # this is the first reminder email
+    mserver = "mail.astro.princeton.edu"
+
+    # read from the possible choice of places
+    places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
+                                   names=True, dtype=['U128', float])
+    my_places = places_weights['name']
+    weights = places_weights['weight']
 
 
 
-# decide on a location
-np.random.seed(int(time.time()))
-decisions = {}
-decisions['_location'] = location_decision(my_places,weights)
+    # decide on a location
+    np.random.seed(int(time.time()))
+    decisions = {}
+    decisions['_location'] = location_decision(my_places,weights)
 
-# read the email template
-with open(emailFile) as f:
-    email = f.read()
+    # read the email template
+    with open(emailFile) as f:
+        email = f.read()
 
-# find unknowns marked by $ in the template
-unknowns = [word[1:] for word in email.split() if word.startswith('$')]
+    # find unknowns marked by $ in the template
+    unknowns = [word[1:] for word in email.split() if word.startswith('$')]
 
-# load settings
-with open('settings.yaml') as f:
-    dataMap = yaml.safe_load(f)
+    # load settings
+    with open('settings.yaml') as f:
+        dataMap = yaml.safe_load(f)
 
-# replace unknowns with either settings or decisions
-for unknown in unknowns:
-    try:
-        d = dataMap[unknown]
-    except KeyError:
+    # replace unknowns with either settings or decisions
+    for unknown in unknowns:
         try:
-            d = dataMap['personality'][unknown]
+            d = dataMap[unknown]
         except KeyError:
             try:
-                d = decisions[unknown]
+                d = dataMap['personality'][unknown]
             except KeyError:
-                d = "DERP"
+                try:
+                    d = decisions[unknown]
+                except KeyError:
+                    d = "DERP"
 
-    # if there are multiple possibilities, randomly decide
-    if type(d) is list or type(d) is tuple:
-        d = d[np.random.randint(0,len(d))]
+        # if there are multiple possibilities, randomly decide
+        if type(d) is list or type(d) is tuple:
+            d = d[np.random.randint(0,len(d))]
 
-    email = email.replace('$'+unknown,d)
+        email = email.replace('$'+unknown,d)
 
-# send email
-send_email(user, pwd, recipient, subject, email,mail_server=mserver)
+    # send email
+    send_email(user, pwd, recipient, subject, email,mail_server=mserver)
+
+
+
+if (__name__ == "__main__"):
+    main(sys.argv[1:])    
