@@ -6,7 +6,7 @@ import traceback
 def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princeton.edu"):
     import smtplib
     
-    FROM = user
+    FROM = "dio"
     TO = recipient if type(recipient) is list else [recipient]
     SUBJECT = subject
     TEXT = body
@@ -31,8 +31,7 @@ import getpass
 pwd = getpass.getpass()
 recipient = "mathewsyriac@gmail.com"
 user = "mathewm"
-subject = "test"
-mserver="mail.astro.princeton.edu"
+subject = "Happy Hour"
         
 emailFile = "email.txt"
 

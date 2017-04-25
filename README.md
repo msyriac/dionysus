@@ -1,4 +1,4 @@
-! A Happy Hour Reminder Bot
+# A Happy Hour Reminder Bot
 
 dio: What is my purpose?
 msyriac: You send emails.
