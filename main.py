@@ -1,10 +1,26 @@
+'''
+This script does the following:
+1. read from an email template
+2. replace "unknowns" in the template with decisions that are randomly selected
+from pre-defined lists (this can be a list of places for Happy Hour, or a list of
+phrases in the "personality" section of settings.yaml)
+3. sends the email to recipients
+
+This needs to be integrated with a daemon that sends email automatically at
+pre-defined times.
+'''
+
 import numpy as np
 import time
 import yaml
 import traceback
 import getpass
+import sys
 
 def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princeton.edu"):
+    '''Sends email given username, password, recipient list, email subject and message
+    body.
+    '''
     import smtplib
     
     FROM = "dio"
@@ -28,12 +44,13 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
         print "failed to send mail"
 
 
-# get email info, password from command line for now
+# get password from command line for now
+# TODO accept location of password file so this can be automated
 pwd = getpass.getpass()
-recipient = "mathewsyriac@gmail.com"
+recipient = "mathewsyriac@gmail.com" # set to myself for testing
 user = "mathewm"
 subject = "Happy Hour"
-emailFile = "email.txt"
+emailFile = "email.txt" # this is the first reminder email
 
 # read from the possible choice of places
 my_places = []
