@@ -7,3 +7,9 @@ dio: What is my purpose?
 msyriac: You send emails.
 
 dio: Oh my god...
+
+# Suggesting new places
+
+Add a comma-delimited row to `listOfPlaces.csv` containing the name of the
+place and a weight expressing your desire to go the place on a scale from 0
+(would never go) to 1 (would always be up for going there).
