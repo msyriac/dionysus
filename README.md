@@ -2,11 +2,11 @@
 
 ![butter-pass](https://coubsecure-s.akamaihd.net/get/b56/p/coub/simple/cw_timeline_pic/13c249557a5/32028402520b27a9e0bff/med_1433953458_image.jpg)
 
-_dio_: What is my purpose?
+**dio**: What is my purpose?
 
-_msyriac_: You send emails.
+**msyriac**: You send emails.
 
-_dio_: Oh my god...
+**dio**: Oh my god...
 
 This bot sends out a reminder email, and a second email with a randomly chosen location for a Happy Hour meet-up.
 
