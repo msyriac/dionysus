@@ -3,8 +3,8 @@ short_name: dio
 frequency: weekly
 trigger_day: Thursday
 time_zone: US/Eastern
-trigger_time_reminder: 2pm
-trigger_time_location: 4pm
+trigger_time_reminder: 6:30pm
+trigger_time_location: 7:00pm
 happy_hour_time: 6pm
 personality:
   greetings:
@@ -33,6 +33,5 @@ email:
   username: mathewm
   recipients:
     - mathewsyriac@gmail.com
-    - liuxx479@gmail.com 
   subject:
     - Happy Hour Test
