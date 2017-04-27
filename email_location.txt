@@ -6,3 +6,7 @@ Hope to see you all there!
 
 $goodbye
 $short_name
+
+PS: My source code is here:
+https://github.com/msyriac/dionysus
+If you'd like to make recommendations for places, please submit a Pull Request there.

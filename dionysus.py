@@ -131,7 +131,7 @@ def check_if_time(frequency,trigger_day,time_zone_string,trigger_time,tolerance)
     
 
 class App():
-    def __init__(self,daemon_command,yaml_file,time_interval_sec=3,tolerance_seconds=100):
+    def __init__(self,daemon_command,yaml_file,time_interval_sec=60,tolerance_seconds=240):
         self.dir = os.path.dirname(os.path.abspath(__file__))
         self.stdin_path = '/dev/null'
         self.stdout_path = self.dir+'/dio_out_'+str(time.time())+".log"

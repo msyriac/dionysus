@@ -7,3 +7,6 @@ At around $trigger_time_location , I will let you know what location I decided o
 $goodbye
 $short_name
 
+PS: My source code is here:
+https://github.com/msyriac/dionysus
+If you'd like to make recommendations for places, please submit a Pull Request there.
