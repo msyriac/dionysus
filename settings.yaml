@@ -1,9 +1,9 @@
 name: dionysus
 short_name: dio
 frequency: weekly
-trigger_day: Monday
-time_zone: EST
-trigger_time_reminder: 2pm
+trigger_day: Thursday
+time_zone: US/Eastern
+trigger_time_reminder: 12:55am
 trigger_time_location: 4pm
 happy_hour_time: 6pm
 personality:
