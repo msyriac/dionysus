@@ -55,36 +55,32 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
 
 
 
-def main(argv):        
+def process_email(email_body,list_of_places_file=None):
+    
+    # recipient = ["mathewsyriac@gmail.com"] # set to myself for testing
+    # user = "mathewm"
+    # subject = "Happy Hour: Tests"
+    # emailFile = "email_location.txt" # this is the first reminder email
+    # mserver = "mail.astro.princeton.edu"
 
-    # get password from command line for now
-    # TODO accept location of password file so this can be automated
-    pwd = getpass.getpass()
-    recipient = ["mathewsyriac@gmail.com"] # set to myself for testing
-    user = "mathewm"
-    subject = "Happy Hour: Tests"
-    emailFile = "email_location.txt" # this is the first reminder email
-    mserver = "mail.astro.princeton.edu"
-
-    # read from the possible choice of places
-    places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
-                                   names=True, dtype=['U128', float])
-    my_places = places_weights['name']
-    weights = places_weights['weight']
-
-
-
-    # decide on a location
-    np.random.seed(int(time.time()))
     decisions = {}
-    decisions['_location'] = location_decision(my_places,weights)
+    if list_of_places_file is not None:
+        # read from the possible choice of places
+        places_weights = np.genfromtxt("listOfPlaces.csv", delimiter=",",
+                                       names=True, dtype=['U128', float])
+        my_places = places_weights['name']
+        weights = places_weights['weight']
+
+        # decide on a location
+        np.random.seed(int(time.time()))
+        decisions['_location'] = location_decision(my_places,weights)
 
     # read the email template
-    with open(emailFile) as f:
-        email = f.read()
+    # with open(emailFile) as f:
+    #     email = f.read()
 
     # find unknowns marked by $ in the template
-    unknowns = [word[1:] for word in email.split() if word.startswith('$')]
+    unknowns = [word[1:] for word in email_body.split() if word.startswith('$')]
 
     # load settings
     with open('settings.yaml') as f:
@@ -107,12 +103,12 @@ def main(argv):
         if type(d) is list or type(d) is tuple:
             d = d[np.random.randint(0,len(d))]
 
-        email = email.replace('$'+unknown,d)
+        email_body = email_body.replace('$'+unknown,d)
 
     # send email
-    send_email(user, pwd, recipient, subject, email,mail_server=mserver)
+    # send_email(user, pwd, recipient, subject, email,mail_server=mserver)
 
-
+    return email_body
 
 if (__name__ == "__main__"):
     main(sys.argv[1:])    

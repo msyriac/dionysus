@@ -1,12 +1,107 @@
 #!/usr/bin/python2
 from __future__ import print_function
-import time, sys, yaml
+import time, sys, yaml, os
 from daemon import runner
 import datetime as dt
 import pytz
 from dateutil import parser
 import getpass
 import calendar
+import numpy as np
+import traceback
+
+def location_decision(my_places,weights):
+    # weights should sum to 1 for multinomial
+    weights /= np.sum(weights)
+    idx = np.where(np.random.multinomial(1, weights))[0]
+    return my_places[idx[0]]
+
+
+def try_email_authenticate(user, pwd,mail_server="mail.astro.princeton.edu"):
+    import smtplib
+    try:
+        server = smtplib.SMTP(mail_server, 587)
+        server.ehlo()
+        server.starttls()
+        server.login(user, pwd)
+        server.close()
+        print('dio: Successfully authenticated.')
+    except:
+        traceback.print_exc()
+        print("dio: Authentication failed.")
+        sys.exit(1)
+
+
+def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princeton.edu"):
+    '''Sends email given username, password, recipient list, email subject and message
+    body.
+    '''
+    import smtplib
+
+    FROM = "dio"
+    TO = recipient if type(recipient) is list else [recipient]
+    SUBJECT = subject
+    TEXT = body
+
+    # Prepare actual message
+    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+    """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+    try:
+        server = smtplib.SMTP(mail_server, 587)
+        server.ehlo()
+        server.starttls()
+        server.login(user, pwd)
+        server.sendmail(FROM, TO, message)
+        server.close()
+        print('dio: Successfully sent mail.')
+    except:
+        traceback.print_exc()
+        print("dio: Failed to send mail.")
+
+
+
+
+def process_email(email_body,data_map,list_of_places_file=None):    
+    
+    decisions = {}
+    if list_of_places_file is not None:
+        # read from the possible choice of places
+        places_weights = np.genfromtxt(list_of_places_file,
+                                       delimiter=",",
+                                       names=True,
+                                       dtype=['U128', float])
+        my_places = places_weights['name']
+        weights = places_weights['weight']
+
+        # decide on a location
+        np.random.seed(int(time.time()))
+        decisions['_location'] = location_decision(my_places,weights)
+
+    # find unknowns marked by $ in the template
+    unknowns = [word[1:] for word in email_body.split() if word.startswith('$')]
+
+    dataMap = data_map
+
+    # replace unknowns with either settings or decisions
+    for unknown in unknowns:
+        try:
+            d = dataMap[unknown]
+        except KeyError:
+            try:
+                d = dataMap['personality'][unknown]
+            except KeyError:
+                try:
+                    d = decisions[unknown]
+                except KeyError:
+                    d = "DERP"
+
+        # if there are multiple possibilities, randomly decide
+        if type(d) is list or type(d) is tuple:
+            d = d[np.random.randint(0,len(d))]
+
+        email_body = email_body.replace('$'+unknown,d)
+
+    return email_body
 
 def check_if_time(frequency,trigger_day,time_zone_string,trigger_time,tolerance):
     today = dt.date.today()
@@ -33,28 +128,73 @@ def check_if_time(frequency,trigger_day,time_zone_string,trigger_time,tolerance)
     
 
 class App():
-    def __init__(self,daemon_command,yaml_file,time_interval_sec=3):
+    def __init__(self,daemon_command,yaml_file,time_interval_sec=3,tolerance_seconds=100):
+        self.dir = os.path.dirname(os.path.abspath(__file__))
         self.stdin_path = '/dev/null'
-        self.stdout_path = '/dev/tty'
-        self.stderr_path = '/dev/tty'
+        self.stdout_path = self.dir+'/dio_out_'+str(time.time())+".log"
+        self.stderr_path = self.dir+'/dio_err_'+str(time.time())+".log"
         self.pidfile_path =  '/tmp/dionysus_daemon.pid'
         self.pidfile_timeout = 5
         self.interval = time_interval_sec
+        self.tolerance = tolerance_seconds
+        assert self.tolerance>self.interval
+
+        self.last_day_reminder = -1
+        self.last_day_location = -1
 
         # get user credentials
         if daemon_command!="stop":
-            self.username = getpass.getpass("Username for accessing mail-server:")
-            self.pwd = getpass.getpass()
             with open('settings.yaml') as f:
                 self.settings = yaml.safe_load(f)
+            self.username = getpass.getpass("Username for accessing "+self.settings['email']['mail_server']+": ")
+            self.pwd = getpass.getpass()
 
-                
+            try_email_authenticate(self.username, self.pwd,mail_server=self.settings['email']['mail_server'])
+            print("dio: Daemon is running.")
             
 
     def run(self):
+        
         while True:
+
+            now_day = dt.datetime.today().day
+            if check_if_time(self.settings['frequency'],
+                             self.settings['trigger_day'],
+                             self.settings['time_zone'],
+                             self.settings['trigger_time_reminder'],
+                             tolerance=self.tolerance) and (now_day!=self.last_day_reminder):
+                print("Time to send a reminder...")
+                self.last_day_reminder = dt.datetime.today().day
+                with open(self.dir+"/email_first_reminder.txt") as f:
+                    email_body = f.read()
+
+                email_body = process_email(email_body,self.settings)
+                send_email(self.username, self.pwd,
+                           self.settings['email']['recipients'],
+                           self.settings['email']['subject'],
+                           email_body,
+                           self.settings['email']['mail_server'])
+                
+            if check_if_time(self.settings['frequency'],
+                             self.settings['trigger_day'],
+                             self.settings['time_zone'],
+                             self.settings['trigger_time_location'],
+                             tolerance=self.tolerance) and (now_day!=self.last_day_location):
+
+                print("Time to send location...")
+                self.last_day_location = dt.datetime.today().day
+
+                with open(self.dir+"/email_location.txt") as f:
+                    email_body = f.read()
+
+                email_body = process_email(email_body,self.settings,
+                                           list_of_places_file=self.dir+"/listOfPlaces.csv")
+                send_email(self.username, self.pwd,
+                           self.settings['email']['recipients'],
+                           self.settings['email']['subject'],
+                           email_body,
+                           self.settings['email']['mail_server'])
             
-            print(check_if_time(self.settings['frequency'],self.settings['trigger_day'],self.settings['time_zone'],self.settings['trigger_time_reminder'],tolerance=30))
             time.sleep(self.interval)
 
 
@@ -64,7 +204,7 @@ try:
 except:
     assert sys.argv[1]=="stop", "No settings yaml file specified."
     yamlFile = None
-            
+
 app = App(sys.argv[1],yamlFile)
 daemon_runner = runner.DaemonRunner(app)
 daemon_runner.do_action()

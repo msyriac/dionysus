@@ -3,8 +3,8 @@ short_name: dio
 frequency: weekly
 trigger_day: Thursday
 time_zone: US/Eastern
-trigger_time_reminder: 12:55am
-trigger_time_location: 4pm
+trigger_time_reminder: 1:41am
+trigger_time_location: 1:55am
 happy_hour_time: 6pm
 personality:
   greetings:
@@ -31,7 +31,8 @@ email:
   mail_server: mail.astro.princeton.edu  
   server_port: 587
   username: mathewm
-  recipient: mathewsyriac@gmail.com
+  recipients:
+    - mathewsyriac@gmail.com
   subject:
     - Happy Hour
   first_reminder_email: email_first_reminder.txt

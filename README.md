@@ -13,3 +13,28 @@ dio: Oh my god...
 Add a comma-delimited row to `listOfPlaces.csv` containing the name of the
 place and a weight expressing your desire to go the place on a scale from 0
 (would never go) to 1 (would always be up for going there).
+
+# Usage
+
+Edit `settings.yaml`, `email_first_reminder.txt`, `email_location.txt` and `listOfPlaces.csv`.
+
+Then,
+
+
+```
+./dionysus.py start settings.yaml
+```
+
+to start a background process.
+
+```
+./dionysus.py stop
+```
+
+to stop any background processes.
+
+```
+./dionysus.py restart settings.yaml
+```
+
+to restart with new settings.
