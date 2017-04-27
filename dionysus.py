@@ -10,6 +10,9 @@ import calendar
 import numpy as np
 import traceback
 
+def randFromList(d):
+    return d[np.random.randint(0,len(d))]
+
 def location_decision(my_places,weights):
     # weights should sum to 1 for multinomial
     weights /= np.sum(weights)
@@ -97,7 +100,7 @@ def process_email(email_body,data_map,list_of_places_file=None):
 
         # if there are multiple possibilities, randomly decide
         if type(d) is list or type(d) is tuple:
-            d = d[np.random.randint(0,len(d))]
+            d = randFromList(d)
 
         email_body = email_body.replace('$'+unknown,d)
 
@@ -171,7 +174,7 @@ class App():
                 email_body = process_email(email_body,self.settings)
                 send_email(self.username, self.pwd,
                            self.settings['email']['recipients'],
-                           self.settings['email']['subject'],
+                           randFromList(self.settings['email']['subject']),
                            email_body,
                            self.settings['email']['mail_server'])
                 
@@ -191,7 +194,7 @@ class App():
                                            list_of_places_file=self.dir+"/listOfPlaces.csv")
                 send_email(self.username, self.pwd,
                            self.settings['email']['recipients'],
-                           self.settings['email']['subject'],
+                           randFromList(self.settings['email']['subject']),
                            email_body,
                            self.settings['email']['mail_server'])
             
@@ -199,12 +202,16 @@ class App():
 
 
 
-try:
-    yamlFile = sys.argv[2]
-except:
-    assert sys.argv[1]=="stop", "No settings yaml file specified."
-    yamlFile = None
+def main(argv):
+    try:
+        yamlFile = sys.argv[2]
+    except:
+        assert sys.argv[1]=="stop", "No settings yaml file specified."
+        yamlFile = None
 
-app = App(sys.argv[1],yamlFile)
-daemon_runner = runner.DaemonRunner(app)
-daemon_runner.do_action()
+    app = App(sys.argv[1],yamlFile)
+    daemon_runner = runner.DaemonRunner(app)
+    daemon_runner.do_action()
+    
+if (__name__ == "__main__"):
+    main(sys.argv)

@@ -2,7 +2,7 @@
 '''
 
 from __future__ import print_function
-from main import location_decision
+from dionysus import location_decision
 import numpy as np
 
 # get places and weights
