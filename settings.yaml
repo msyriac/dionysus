@@ -9,6 +9,7 @@ happy_hour_time: 6pm
 personality:
   greetings:
     - Hi Peyton postdocs and grads!
+    - Hello Peyton postdocs and grads!
     - Hello everyone,
     - Hi there,
   afterthought_prelude:
@@ -34,4 +35,4 @@ email:
     - gradstupub@astro.princeton.edu
     - mathewsyriac@gmail.com
   subject:
-    - Peyton Happy Hour
+    - Peyton Happy Hour Tonight
