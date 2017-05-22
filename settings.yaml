@@ -5,7 +5,7 @@ trigger_day: Monday
 time_zone: US/Eastern
 trigger_time_reminder: 2pm
 trigger_time_location: 4pm
-happy_hour_time: 6pm
+happy_hour_time: 5:50pm
 personality:
   greetings:
     - Hi Peyton postdocs and grads!

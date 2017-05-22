@@ -14,10 +14,26 @@ def randFromList(d):
     return d[np.random.randint(0,len(d))]
 
 def location_decision(my_places,weights):
+
+    try:
+        with open('/tmp/dionysus_last_time.txt', 'r') as myfile:
+            last_time=myfile.read().replace('\n', '').strip()
+    except:
+        last_time = ""
+
+        
     # weights should sum to 1 for multinomial
     weights /= np.sum(weights)
-    idx = np.where(np.random.multinomial(1, weights))[0]
-    return my_places[idx[0]]
+
+    decision = last_time
+    while decision.strip()==last_time:
+        idx = np.where(np.random.multinomial(1, weights))[0]
+        decision = my_places[idx[0]]
+
+    with open('/tmp/dionysus_last_time.txt', "w") as text_file:
+        text_file.write(decision)
+                
+    return decision
 
 
 def try_email_authenticate(user, pwd,mail_server="mail.astro.princeton.edu"):
@@ -131,7 +147,7 @@ def check_if_time(frequency,trigger_day,time_zone_string,trigger_time,tolerance)
     
 
 class App():
-    def __init__(self,daemon_command,yaml_file,time_interval_sec=60,tolerance_seconds=240):
+    def __init__(self,daemon_command,yaml_file,time_interval_sec=60,tolerance_seconds=180):
         self.dir = os.path.dirname(os.path.abspath(__file__))
         self.stdin_path = '/dev/null'
         self.stdout_path = self.dir+'/dio_out_'+str(time.time())+".log"
@@ -161,6 +177,7 @@ class App():
         while True:
 
             now_day = dt.datetime.today().day
+            '''
             if check_if_time(self.settings['frequency'],
                              self.settings['trigger_day'],
                              self.settings['time_zone'],
@@ -177,7 +194,8 @@ class App():
                            randFromList(self.settings['email']['subject']),
                            email_body,
                            self.settings['email']['mail_server'])
-                
+            '''
+            
             if check_if_time(self.settings['frequency'],
                              self.settings['trigger_day'],
                              self.settings['time_zone'],
