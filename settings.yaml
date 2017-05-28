@@ -1,10 +1,12 @@
 name: dionysus
 short_name: dio
 frequency: weekly
-trigger_day: Monday
+#trigger_day: Monday
+trigger_day: Sunday
 time_zone: US/Eastern
 trigger_time_reminder: 2pm
-trigger_time_location: 4pm
+#trigger_time_location: 4pm
+trigger_time_location: 2:52pm
 happy_hour_time: 5:50pm
 personality:
   greetings:
@@ -31,8 +33,8 @@ email:
   server_port: 587
   username: mathewm
   recipients:
-    - postdoc@astro.princeton.edu
-    - gradstupub@astro.princeton.edu
     - mathewsyriac@gmail.com
   subject:
     - Peyton Happy Hour Tonight
+#- postdoc@astro.princeton.edu
+#- gradstupub@astro.princeton.edu

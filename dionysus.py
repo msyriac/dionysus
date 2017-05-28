@@ -37,6 +37,10 @@ def location_decision(my_places,weights):
 
 
 def try_email_authenticate(user, pwd,mail_server="mail.astro.princeton.edu"):
+    """Before starting the daemon (which might only try accessing the mail
+    server a week later), we want to make sure the credentials entered are valid.
+    """
+    
     import smtplib
     try:
         server = smtplib.SMTP(mail_server, 587)
@@ -81,16 +85,28 @@ def send_email(user, pwd, recipient, subject, body,mail_server="mail.astro.princ
 
 
 def process_email(email_body,data_map,list_of_places_file=None):    
-    
     decisions = {}
     if list_of_places_file is not None:
         # read from the possible choice of places
         places_weights = np.genfromtxt(list_of_places_file,
                                        delimiter=",",
                                        names=True,
-                                       dtype=['U128', float])
+                                       dtype=['U128', float, 'U128'])
         my_places = places_weights['name']
         weights = places_weights['weight']
+        patios = np.array([s.strip().lower() in ['true','t','y','yes','yep'] for s in places_weights['patio']])
+
+        import weather_info as w
+        woeid = 2476729 # Princeton, NJ
+        nice_out,weather,temperature = w.is_it_nice_out(woeid)
+        nice_out = False
+
+        if nice_out:
+            my_places = my_places[np.where(patios)]
+            weights = weights[np.where(patios)]
+            data_map['weather'] = "(It's nice out today, so I picked a place that has a patio.)"
+        else:
+            data_map['weather'] = ""
 
         # decide on a location
         np.random.seed(int(time.time()))
@@ -163,7 +179,7 @@ class App():
 
         # get user credentials
         if daemon_command!="stop":
-            with open('settings.yaml') as f:
+            with open(yaml_file) as f:
                 self.settings = yaml.safe_load(f)
             self.username = getpass.getpass("Username for accessing "+self.settings['email']['mail_server']+": ")
             self.pwd = getpass.getpass()
@@ -219,6 +235,15 @@ class App():
             time.sleep(self.interval)
 
 
+def test(yaml_file):
+    dir = os.path.dirname(os.path.abspath(__file__))
+    with open(yaml_file) as f:
+        settings = yaml.safe_load(f)
+    with open(dir+"/email_location.txt") as f:
+        email_body = f.read()
+    email_body = process_email(email_body,settings, \
+                               list_of_places_file=dir+"/listOfPlaces.csv")
+    print(email_body)
 
 def main(argv):
     try:
@@ -227,9 +252,15 @@ def main(argv):
         assert sys.argv[1]=="stop", "No settings yaml file specified."
         yamlFile = None
 
+    if sys.argv[1]=="test":
+        test(sys.argv[2])
+        sys.exit()
+        
     app = App(sys.argv[1],yamlFile)
     daemon_runner = runner.DaemonRunner(app)
     daemon_runner.do_action()
     
 if (__name__ == "__main__"):
     main(sys.argv)
+
+
