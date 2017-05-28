@@ -99,7 +99,6 @@ def process_email(email_body,data_map,list_of_places_file=None):
         import weather_info as w
         woeid = 2476729 # Princeton, NJ
         nice_out,weather,temperature = w.is_it_nice_out(woeid)
-        nice_out = False
 
         if nice_out:
             my_places = my_places[np.where(patios)]

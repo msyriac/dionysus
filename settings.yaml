@@ -6,7 +6,7 @@ trigger_day: Sunday
 time_zone: US/Eastern
 trigger_time_reminder: 2pm
 #trigger_time_location: 4pm
-trigger_time_location: 2:52pm
+trigger_time_location: 3:22pm
 happy_hour_time: 5:50pm
 personality:
   greetings:
