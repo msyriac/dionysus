@@ -13,8 +13,10 @@ This bot sends out a reminder email, and a second email with a randomly chosen l
 # Suggesting new places
 
 Add a comma-delimited row to `listOfPlaces.csv` containing the name of the
-place and a weight expressing your desire to go the place on a scale from 0
-(would never go) to 1 (would always be up for going there).
+place, a weight expressing your desire to go the place on a scale from 0
+(would never go) to 1 (would always be up for going there) and True/False
+depending on whether the place has a patio. If the weather is nice, only
+those places that have a patio will be considered.
 
 # Usage
 
