@@ -8,7 +8,7 @@
 
 **dio**: Oh my god...
 
-This bot sends out a reminder email, and a second email with a randomly chosen location for a Happy Hour meet-up.
+This bot sends out a reminder email with a randomly chosen location for a Happy Hour meet-up. It now has weather awareness.
 
 # Suggesting new places
 
