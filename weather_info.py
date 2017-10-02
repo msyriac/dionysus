@@ -13,7 +13,7 @@ def is_it_nice_out(woeid):
 
     
     bad_weather = ['Rain','Thunderstorms','Showers']
-    cold_temp = 60
+    cold_temp = 64
 
     outside = condition['text'].strip()
     temp = int(condition['temp'])

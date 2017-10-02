@@ -103,7 +103,8 @@ def process_email(email_body,data_map,list_of_places_file=None):
         if nice_out:
             my_places = my_places[np.where(patios)]
             weights = weights[np.where(patios)]
-            data_map['weather'] = "(It's nice out today, so I picked a place that has a patio.)"
+            
+            data_map['weather'] = "(It's not too bad out today, so I picked a place that has a patio.)"
         else:
             data_map['weather'] = ""
 
