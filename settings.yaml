@@ -1,7 +1,7 @@
 name: dionysus
 short_name: dio
 frequency: weekly
-trigger_day: Monday
+trigger_day: Thursday
 time_zone: US/Eastern
 trigger_time_reminder: 2pm
 trigger_time_location: 4pm
@@ -35,5 +35,7 @@ email:
     - gradstupub@astro.princeton.edu
     - mathewsyriac@gmail.com
     - khc@princeton.edu
+    - jcolin.hill@gmail.com
+    - mschmittfull@ias.edu
   subject:
     - Peyton Happy Hour Tonight
