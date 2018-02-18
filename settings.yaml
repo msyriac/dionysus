@@ -1,11 +1,11 @@
 name: dionysus
 short_name: dio
 frequency: weekly
-trigger_day: Thursday
+trigger_day: Tuesday
 time_zone: US/Eastern
 trigger_time_reminder: 2pm
 trigger_time_location: 4pm
-happy_hour_time: 5:20pm
+happy_hour_time: 5:50pm
 personality:
   greetings:
     - Hi Peyton postdocs and grads!
