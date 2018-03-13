@@ -1,6 +1,6 @@
 $greetings
 
-After much deliberation, I've decided we get drinks at $_location tonight. $weather Let's meet at the Peyton lobby at $happy_hour_time and leave together.
+Beep boop, I've decided we get drinks at $_location tonight. $weather Let's meet at the Peyton lobby at $happy_hour_time and leave together.
 
 Hope to see you all there!
 
